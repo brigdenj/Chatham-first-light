@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chatham First Light — Bring Back the Beacon's Sweep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#101B2D;
+    --navy-deep:#0A1220;
+    --amber:#E8A33D;
+    --amber-dim:#a9772c;
+    --paper:#F3EEE1;
+    --paper-dim:#e8e0cc;
+    --rust:#A63D2F;
+    --fog:#8996A3;
+    --ink:#1A1712;
+    --ink-soft:#4a453c;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Source Serif 4', Georgia, serif;
+    line-height:1.6;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important;}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    background:linear-gradient(180deg, var(--navy-deep) 0%, var(--navy) 70%, #16263c 100%);
+    color:var(--paper);
+    overflow:hidden;
+    padding:0 0 0 0;
+    min-height:min(92vh, 780px);
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+  }
+  .stars{
+    position:absolute; inset:0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(243,238,225,.5), transparent),
+      radial-gradient(1px 1px at 25% 35%, rgba(243,238,225,.35), transparent),
+      radial-gradient(1.5px 1.5px at 60% 15%, rgba(243,238,225,.5), transparent),
+      radial-gradient(1px 1px at 75% 40%, rgba(243,238,225,.3), transparent),
+      radial-gradient(1px 1px at 90% 22%, rgba(243,238,225,.45), transparent),
+      radial-gradient(1.5px 1.5px at 40% 10%, rgba(243,238,225,.4), transparent),
+      radial-gradient(1px 1px at 15% 55%, rgba(243,238,225,.3), transparent);
+    opacity:.8;
+  }
+  .beam-field{
+    position:absolute;
+    left:calc(50% + 30px);
+    bottom:210px;
+    width:2200px;
+    height:2200px;
+    margin-left:-1100px;
+    border-radius:50%;
+    background:conic-gradient(from 0deg,
+      rgba(232,163,61,0) 0deg,
+      rgba(232,163,61,0) 342deg,
+      rgba(232,163,61,.22) 353deg,
+      rgba(232,163,61,.55) 359deg,
+      rgba(232,163,61,.55) 1deg,
+      rgba(232,163,61,.22) 7deg,
+      rgba(232,163,61,0) 18deg,
+      rgba(232,163,61,0) 360deg);
+    animation:sweep 8s linear infinite;
+    filter:blur(1px);
+  }
+  @keyframes sweep{ to{ transform:rotate(360deg); } }
+
+  .hero-inner{
+    position:relative;
+    z-index:2;
+    padding:64px 6vw 0 6vw;
+  }
+  .brand{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:15px;
+    letter-spacing:.06em;
+    color:var(--paper);
+    margin:0 0 14px 0;
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+  }
+  .brand::before{
+    content:"";
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 8px 2px rgba(232,163,61,.7);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin:0 0 22px 0;
+  }
+  h1.headline{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(2.2rem, 5.4vw, 4.4rem);
+    line-height:1.04;
+    margin:0 0 20px 0;
+    max-width:14ch;
+    letter-spacing:-0.01em;
+  }
+  .headline em{
+    font-style:italic;
+    font-weight:400;
+    color:var(--amber);
+  }
+  .hero-sub{
+    font-size:clamp(1rem,1.6vw,1.2rem);
+    color:#cfd6de;
+    max-width:52ch;
+    margin:0 0 48px 0;
+  }
+
+  .skyline{
+    position:relative;
+    z-index:2;
+    width:100%;
+    height:150px;
+    display:block;
+  }
+
+  /* ---------- STAT BAR ---------- */
+  .statbar{
+    background:var(--navy-deep);
+    border-top:1px solid rgba(232,163,61,.25);
+    color:var(--paper);
+    padding:26px 6vw;
+    display:flex;
+    gap:48px;
+    flex-wrap:wrap;
+    align-items:baseline;
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .stat-num{
+    font-family:'Fraunces', serif;
+    font-size:2.1rem;
+    color:var(--amber);
+    font-weight:600;
+    margin-right:8px;
+  }
+  .stat-label{
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--fog);
+  }
+
+  /* ---------- STATEMENT ---------- */
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:88px 24px;
+  }
+  .kicker{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--rust);
+    margin-bottom:14px;
+  }
+  h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(1.6rem,3vw,2.2rem);
+    margin:0 0 28px 0;
+    color:var(--ink);
+  }
+  .statement p{
+    font-size:1.08rem;
+    color:var(--ink-soft);
+    margin:0 0 22px 0;
+  }
+  .statement p.lede{
+    font-size:1.22rem;
+    color:var(--ink);
+    font-weight:500;
+  }
+  .facts{
+    background:var(--paper-dim);
+    border-left:3px solid var(--rust);
+    padding:24px 28px;
+    margin:34px 0;
+    font-size:.98rem;
+  }
+  .facts h3{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin:0 0 14px 0;
+  }
+  .facts ul{margin:0; padding-left:20px;}
+  .facts li{margin-bottom:12px; color:var(--ink-soft);}
+  .facts li:last-child{margin-bottom:0;}
+
+  .ask{
+    background:var(--navy);
+    color:var(--paper);
+    border-radius:2px;
+    padding:30px 32px;
+    margin-top:34px;
+  }
+  .ask h3{
+    font-family:'Fraunces',serif;
+    font-size:1.2rem;
+    margin:0 0 10px 0;
+    color:var(--amber);
+    font-weight:600;
+  }
+  .ask p{color:#d7dce2; margin:0; font-size:1rem;}
+
+  /* ---------- FORM ---------- */
+  .register{
+    background:var(--navy-deep);
+    color:var(--paper);
+    padding:90px 24px 100px 24px;
+  }
+  .register-inner{
+    max-width:760px;
+    margin:0 auto;
+  }
+  .register h2{color:var(--paper);}
+  .register .kicker{color:var(--amber);}
+  .register-sub{color:#b9c1c9; margin:0 0 40px 0; font-size:1.02rem; max-width:56ch;}
+
+  form{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    background:var(--paper);
+    padding:32px;
+    border-radius:2px;
+  }
+  .field{display:flex; flex-direction:column; gap:7px;}
+  .field.full{grid-column:1 / -1;}
+  label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  input, textarea{
+    font-family:'Source Serif 4', serif;
+    font-size:1rem;
+    padding:11px 13px;
+    border:1px solid #cfc6ac;
+    border-radius:2px;
+    background:#fff;
+    color:var(--ink);
+  }
+  input:focus, textarea:focus{
+    outline:2px solid var(--rust);
+    outline-offset:1px;
+    border-color:var(--rust);
+  }
+  textarea{resize:vertical; min-height:80px; font-family:'Source Serif 4',serif;}
+  .consent{
+    grid-column:1 / -1;
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    font-size:.92rem;
+    color:var(--ink-soft);
+    font-family:'Source Serif 4', serif;
+  }
+  .consent input{width:auto; margin-top:3px;}
+  button{
+    grid-column:1 / -1;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    background:var(--rust);
+    color:var(--paper);
+    border:none;
+    padding:15px 20px;
+    border-radius:2px;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  button:hover{background:#8a3225;}
+  button:disabled{background:#b39284; cursor:not-allowed;}
+  .form-msg{
+    grid-column:1 / -1;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:var(--rust);
+    min-height:18px;
+  }
+  .form-msg.ok{color:#3d7a4f;}
+  .privacy-note{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--fog);
+    margin-top:16px;
+    max-width:56ch;
+  }
+
+  /* ---------- LOG ---------- */
+  .log-section{
+    background:var(--paper);
+    padding:90px 24px 100px 24px;
+  }
+  .log-inner{max-width:760px; margin:0 auto;}
+  .log-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:28px;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:14px;
+  }
+  .log-head h2{margin:0;}
+  .log-count{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    letter-spacing:.06em;
+  }
+  .log-table{width:100%; border-collapse:collapse; font-family:'IBM Plex Mono', monospace; font-size:13.5px;}
+  .log-table tr{border-bottom:1px solid #ddd3ba;}
+  .log-table td{padding:13px 8px; vertical-align:top;}
+  .log-table td.name{color:var(--ink); font-weight:600; white-space:nowrap;}
+  .log-table td.addr{color:var(--ink-soft);}
+  .log-table td.comment{color:var(--ink-soft); font-style:italic; font-family:'Source Serif 4', serif; font-size:14px;}
+  .log-empty{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--fog);
+    padding:24px 0;
+  }
+
+  footer{
+    background:var(--navy-deep);
+    color:var(--fog);
+    text-align:center;
+    padding:38px 24px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:640px){
+    form{grid-template-columns:1fr;}
+    .beam-field{bottom:170px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="stars"></div>
+  <div class="beam-field"></div>
+  <div class="hero-inner">
+    <p class="brand">Chatham First Light</p>
+    <p class="eyebrow">A group of residents, boaters &amp; fishermen concerned about Chatham Light · July 2026</p>
+    <h1 class="headline">Preserve Chatham Light — its <em>sweep</em> and its <em>aura</em>.</h1>
+    <p class="hero-sub">Since 1877, Chatham Light's sweep and the aura it cast over the water and shoreline have been a defining presence here — and a visual reference the Coast Guard's own Coast Pilot tells mariners to steer by. This month that changed. We're asking the Coast Guard to preserve it.</p>
+  </div>
+  <svg class="skyline" viewBox="0 0 1200 150" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,150 L0,110 L30,95 L45,110 L60,80 L75,105 L100,90 L120,110 L150,70 L165,100 L190,85 L210,110 L240,95 L260,120 L300,75 L320,105 L350,90 L370,115 L400,100 L420,60 L440,95 L470,110 L490,85 L520,105 L545,70 L560,100 L590,90 L610,115 L640,100 L660,80 L690,105 L710,95 L740,60 L760,100 L790,85 L810,110 L840,95 L865,120 L895,80 L915,105 L945,90 L965,115 L995,70 L1015,100 L1045,90 L1065,110 L1095,95 L1115,120 L1145,85 L1165,105 L1200,95 L1200,150 Z" fill="#0A1220"/>
+  </svg>
+</div>
+
+<div class="statbar">
+  <div><span class="stat-num" id="stat-count">—</span><span class="stat-label">Signatories</span></div>
+  <div><span class="stat-num" id="stat-streets">—</span><span class="stat-label">Locations represented</span></div>
+</div>
+
+<div class="wrap">
+  <p class="kicker">The Statement</p>
+  <h2>A safety question, a historic-preservation question, and a question of stewardship.</h2>
+  <div class="statement">
+    <p class="lede">Chatham Light has marked these waters since 1877. Its sweep, and the aura it cast across the water and the shoreline, were not decoration — they are how this light does its work close to shore, in some of the most dangerous and fastest-changing waters on the Atlantic coast.</p>
+    <p>This July the Coast Guard replaced the beacon with an LED unit. Since then, residents, boaters, and fishermen have independently reported the same thing: Chatham Light no longer presents as it did. The sweep isn't apparent, and the aura over the water and shoreline is gone. We can't measure what changed — but we don't believe the right question has been asked, and we don't accept that this is simply what modernization looks like.</p>
+
+    <div class="facts">
+      <h3>What we know</h3>
+      <ul>
+        <li>During the pandemic, the Coast Guard installed a temporary, lower-intensity light at Chatham Light while replacing the station's generator — stating it would remain afterward as a permanent backup to the main beacon.</li>
+        <li>In July 2026, the Coast Guard's Aids to Navigation Team replaced the original World War II-era beacon entirely with a new LED unit, citing failing, unsupportable equipment, and describing the new light as providing "the same, if not better" visibility.</li>
+        <li>Residents across town, along with boaters and fishermen, report that Chatham Light no longer presents as it did — the sweep isn't apparent and the aura over the water and shoreline is gone. This is not about how brightly-lit the town is; it's about how the light itself reads from a distance.</li>
+        <li><strong>This is not a choice between failing equipment and what's there now.</strong> Rotating optics driven by modern mechanics and lit by modern LED sources are in service at other stations — including Gay Head Light on Martha's Vineyard, where the Coast Guard adjusted a new LED beacon after residents raised concerns. Reliability and low power draw don't require giving up the sweep.</li>
+      </ul>
+    </div>
+
+    <div class="facts">
+      <h3>This isn't only about heritage — it's about near-shore navigation</h3>
+      <ul>
+        <li>Chatham Light isn't just a monument. The U.S. Coast Pilot lists it among the conspicuous landmarks for approaching Chatham Roads and Stage Harbor, and gives a course that depends on seeing it: off the entrance to Chatham Roads, steer 063° with Stage Harbor and Chatham Lights in range.</li>
+        <li>These are among the most dynamic waters on the coast. The Coast Pilot notes shoals are constantly shifting in the Chatham Harbor entrance east of the light, with extremely strong currents and surf that builds fast on the outer bar during an ebb; Nauset Beach is continually changing from erosion and shifting sands, with an unmarked and extremely dangerous break; and the Monomoy shoals shift in location and depth.</li>
+        <li>In the shoal area running from about 2.7 miles south of the light toward Monomoy, the Coast Pilot states there is <strong>no marked channel through the shoals</strong>. Where the bottom rearranges itself between surveys, charts and GPS are only as current as the last survey — and buoyage doesn't cover that ground at all. A conspicuous visual reference ashore isn't redundant there; for boats running the bar at night it's often the most reliable thing available.</li>
+      </ul>
+    </div>
+
+    <div class="facts">
+      <h3>February 18, 1952 — what these waters actually demand</h3>
+      <ul>
+        <li>BM1 Bernard Webber and three volunteers took the motor lifeboat CG36500 from the Chatham Fish Pier across Chatham Bar in a nor'easter and brought back thirty-two men from the stern of the tanker <em>Pendleton</em> — the most famous small-boat rescue in Coast Guard history.</li>
+        <li>Crossing the bar, a wave tore the compass off its mount. Webber navigated home through darkness and blinding snow with no compass at all, hunting for any light he could recognize, and found his way by a small buoy light inside the bar at the turn into Old Harbor.</li>
+        <li>The rescue is commemorated at Chatham Light today, steps from the tower. The lesson isn't that the lighthouse saved them — it's that on this bar, when instruments fail, mariners survive on what they can see. That hasn't changed. What a light looks like from the water, close in and at night, is a safety characteristic.</li>
+      </ul>
+    </div>
+
+    <div class="facts">
+      <h3>And it was done without telling anyone</h3>
+      <ul>
+        <li>Chatham Light's historic apparatus was removed and replaced with no notice to the Town of Chatham, no notice to the Historic District Commission, no consultation with the harbormaster or the commercial fishing fleet that runs this bar, and no chance for anyone to ask a question first.</li>
+        <li>Residents found out by looking at the sky. A federal agency altering the most recognized landmark in this community without informing the town that hosts it is a failure of basic stewardship — and it's why an equipment swap has become a question of public trust.</li>
+      </ul>
+    </div>
+
+    <div class="facts">
+      <h3>This is a federally protected historic property — and there are obligations that attach</h3>
+      <ul>
+        <li>Chatham Light Station was listed on the <strong>National Register of Historic Places on June 15, 1987</strong> (ref. 87001501), and is <em>separately</em> a contributing property to the Old Village Historic District, listed in 2001 (ref. 01001406). The rotating apparatus and the sweep it produced are among the features by which this station has been identified since 1877.</li>
+        <li>Removing and replacing that apparatus is an undertaking under <strong>Section 106 of the National Historic Preservation Act, 54 U.S.C. § 306108</strong>. Under <strong>36 CFR § 800.5(a)(2)</strong>, an adverse effect includes altering the characteristics that qualify a property for the National Register and introducing visual elements that diminish the integrity of its significant historic features.</li>
+        <li>Separately, <strong>54 U.S.C. §§ 306101–306102</strong> obligate the Coast Guard, as the owning agency, to manage and maintain historic properties under its control with due consideration for their historic value.</li>
+        <li>We're asking the Coast Guard to <strong>demonstrate it met these obligations</strong> — produce the determination of effect, the consultation record with the Massachusetts Historical Commission as SHPO, and any programmatic agreement relied on instead of individual review. If those records exist, this resolves quickly. If they don't, consultation should begin now and the removed apparatus should be preserved intact.</li>
+        <li>Any private owner in the Old Village Historic District would need a certificate of appropriateness before an exterior change of anything close to this magnitude. Federal property isn't subject to the Town's bylaw — but the Coast Guard shouldn't hold itself to a lower standard than the neighbors it expects to comply.</li>
+      </ul>
+    </div>
+
+    <div class="facts">
+      <h3>And it carries real economic weight</h3>
+      <ul>
+        <li>Chatham Light is the single most recognized image of this town. It anchors the Old Village Historic District and is a principal reason visitors come to Chatham at all.</li>
+        <li>The character it lends surrounding neighborhoods is reflected in property values here and in the viability of the businesses that depend on visitors. A town whose defining public asset is diminished absorbs that loss in its tax base and on its Main Street. This isn't a matter of taste.</li>
+      </ul>
+    </div>
+
+    <div class="facts">
+      <h3>Consider what this town was doing at the same time</h3>
+      <ul>
+        <li>In <strong>March 2026</strong>, after a preservation effort spanning more than fifteen years, Chatham brought home the historic Coast Guard boathouse that stood on Stage Island and watched over Stage Harbor for some seventy years — the building that housed the small rescue boats of Coast Guard Station Chatham, <strong>including CG36500</strong>, the boat that crossed the bar for the <em>Pendleton</em>.</li>
+        <li>Preservationists saved it from demolition in 2009. It sat in a shipping yard in Quincy and on the shore at Hull for years while this town found a way to bring it back. It was barged from New Bedford and lifted onto a new pier at 90 Bridge Street as the centerpiece of an <strong>$11 million waterfront project</strong> — sustained across many years by residents, donors, and town appropriation, to preserve <em>the Coast Guard's own heritage</em> in Chatham.</li>
+        <li>Four months later and about a mile away, the historic apparatus was pulled out of Chatham Light without a word to the town that had just done that work. This is a community that has demonstrated, at real cost and over more than a decade, how much it values the Service's history here. <strong>It deserved to be asked.</strong></li>
+      </ul>
+    </div>
+
+    <div class="ask">
+      <h3>What we're asking for</h3>
+      <p>The new fixture may well hit its rated 25 nautical miles offshore. That is a different measurement from near-shore conspicuity — how plainly the light reads to someone a mile or two off, looking for it against the shoreline. Concentrating output tightly toward the horizon is exactly what improves the offshore rating and what can diminish the near-shore presentation. If that's what happened here, this isn't a light that's merely different; it's a light less suited to the waters it serves, and the wrong application of the technology at this station. We're asking the Coast Guard to publish the installed beam characteristics against the prior beacon's, state whether near-shore conspicuity was ever evaluated, confirm whether Section 106 historic review was conducted, conduct a night on-water assessment with local mariners aboard, and — if there's a shortfall — remediate it with a rotating optic using a modern LED source and modern drive mechanics, so reliability and the sweep are both preserved.</p>
+      <p style="margin-top:16px;"><strong>And bring the parts home.</strong> Every component removed from Chatham Light — the beacon, its optic, its drive mechanism — should be accounted for, preserved intact, and returned to Chatham. Nothing should be scrapped, surplussed, or dispersed while these questions are open. The Coast Guard has long-standing mechanisms for placing historic aids-to-navigation equipment with local stewards, and both the Chatham Marconi Maritime Center and the Atwood House Museum are prepared to receive and conserve it. This equipment belongs in the town whose harbor it served.</p>
+      <p style="margin-top:16px;">At a minimum in the meantime: if any screen or obscuring panel is fitted to the lantern on the landward side, we're asking whether it can be removed or reduced without affecting the light's navigational characteristic — as a partial restoration of the light's presence over the town while the larger questions are worked out.</p>
+    </div>
+  </div>
+</div>
+
+<div class="register">
+  <div class="register-inner">
+    <p class="kicker">Add Your Name</p>
+    <h2>Join the register.</h2>
+    <p class="register-sub">This builds the record of support we'll send to the Coast Guard, the Select Board, and Chatham's historic and civic organizations. Residents, boaters, fishermen, and others who know these waters are all welcome to become signatories. If you run these waters at night, say so — firsthand accounts from mariners carry particular weight. Your name, location, and comment will be visible to other visitors to this page as part of that public record.</p>
+
+    <form id="signForm">
+      <div class="field">
+        <label for="name">Full name</label>
+        <input type="text" id="name" required maxlength="80">
+      </div>
+      <div class="field">
+        <label for="address">Street, neighborhood, or how you know the light (e.g. "Stage Harbor mooring," "Lighthouse Beach regular")</label>
+        <input type="text" id="address" required maxlength="120" placeholder="e.g. Shore Rd · Stage Harbor mooring · Lighthouse Beach">
+      </div>
+      <div class="field">
+        <label for="email">Email (optional, not shown publicly)</label>
+        <input type="email" id="email" maxlength="120">
+      </div>
+      <div class="field">
+        <label for="phone">Phone (optional, not shown publicly)</label>
+        <input type="tel" id="phone" maxlength="40">
+      </div>
+      <div class="field full">
+        <label for="comment">A word on what the light has meant to you (optional)</label>
+        <textarea id="comment" maxlength="280"></textarea>
+      </div>
+      <div class="consent">
+        <input type="checkbox" id="consent" required>
+        <label for="consent" style="text-transform:none; letter-spacing:normal; font-size:.92rem;">I support this statement and understand my name, street, and comment (not my email or phone) will be visible publicly on this page.</label>
+      </div>
+      <button type="submit" id="submitBtn">Add my name</button>
+      <div class="form-msg" id="formMsg"></div>
+    </form>
+    <p class="privacy-note">Email and phone are collected only so organizers can follow up about next steps (town meetings, the Coast Guard letter, press) and are never displayed on this page.</p>
+  </div>
+</div>
+
+<div class="log-section">
+  <div class="log-inner">
+    <div class="log-head">
+      <h2>The Register</h2>
+      <span class="log-count" id="logCount">Loading…</span>
+    </div>
+    <div id="logBody">
+      <p class="log-empty">Loading signatories…</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Chatham First Light &middot; Chatham, Massachusetts &middot; organized by John Brigden &amp; Seth Perretta &middot; not affiliated with the Town of Chatham or the U.S. Coast Guard
+</footer>
+
+<script>
+const STORAGE_KEY = 'chatham-light-signatures';
+
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str || '';
+  return d.innerHTML;
+}
+
+function timeAgo(ts){
+  const diff = Date.now() - ts;
+  const min = Math.floor(diff/60000);
+  if(min < 1) return 'just now';
+  if(min < 60) return min + 'm ago';
+  const hr = Math.floor(min/60);
+  if(hr < 24) return hr + 'h ago';
+  const day = Math.floor(hr/24);
+  return day + 'd ago';
+}
+
+async function loadSignatures(){
+  try{
+    const res = await window.storage.get(STORAGE_KEY, true);
+    return res && res.value ? JSON.parse(res.value) : [];
+  }catch(e){
+    return [];
+  }
+}
+
+async function saveSignatures(list){
+  await window.storage.set(STORAGE_KEY, JSON.stringify(list), true);
+}
+
+function renderStats(list){
+  document.getElementById('stat-count').textContent = list.length;
+  const streets = new Set(list.map(s => (s.address||'').split(',')[0].trim().toLowerCase()).filter(Boolean));
+  document.getElementById('stat-streets').textContent = streets.size;
+}
+
+function renderLog(list){
+  const body = document.getElementById('logBody');
+  const countEl = document.getElementById('logCount');
+  countEl.textContent = list.length + (list.length === 1 ? ' signatory' : ' signatories');
+
+  if(list.length === 0){
+    body.innerHTML = '<p class="log-empty">No signatories yet — be the first to add your name above.</p>';
+    return;
+  }
+
+  const sorted = [...list].sort((a,b) => b.ts - a.ts);
+  let html = '<table class="log-table"><tbody>';
+  for(const s of sorted){
+    html += '<tr>';
+    html += '<td class="name">' + escapeHtml(s.name) + '</td>';
+    html += '<td class="addr">' + escapeHtml(s.address) + '</td>';
+    html += '<td class="comment">' + (s.comment ? '\u201c' + escapeHtml(s.comment) + '\u201d' : '') + '</td>';
+    html += '<td class="addr" style="white-space:nowrap; text-align:right; color:#a89f88;">' + timeAgo(s.ts) + '</td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  body.innerHTML = html;
+}
+
+async function refresh(){
+  const list = await loadSignatures();
+  renderStats(list);
+  renderLog(list);
+  return list;
+}
+
+document.getElementById('signForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const msg = document.getElementById('formMsg');
+  const name = document.getElementById('name').value.trim();
+  const address = document.getElementById('address').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const comment = document.getElementById('comment').value.trim();
+
+  if(!name || !address){
+    msg.textContent = 'Name and street are required.';
+    msg.className = 'form-msg';
+    return;
+  }
+
+  btn.disabled = true;
+  msg.textContent = 'Saving…';
+  msg.className = 'form-msg';
+
+  try{
+    const list = await loadSignatures();
+    list.push({ name, address, email, phone, comment, ts: Date.now() });
+    await saveSignatures(list);
+    msg.textContent = 'Added. Thank you for standing up for the light.';
+    msg.className = 'form-msg ok';
+    document.getElementById('signForm').reset();
+    renderStats(list);
+    renderLog(list);
+  }catch(err){
+    msg.textContent = 'Something went wrong — please try again.';
+    msg.className = 'form-msg';
+  }finally{
+    btn.disabled = false;
+  }
+});
+
+refresh();
+</script>
+
+</body>
+</html>
