@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -197,6 +196,91 @@
     line-height: 1.6;
   }
   .privacy-note { border-left: 2px solid var(--beacon-dim); padding-left: 1rem; }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(22, 35, 47, 0.72);
+    z-index: 100;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 4vh 1.2rem;
+    overflow-y: auto;
+  }
+
+  .modal-box {
+    background: var(--paper);
+    max-width: 640px;
+    width: 100%;
+    border-radius: 4px;
+    padding: 2.4rem 2rem 2.2rem;
+    position: relative;
+    margin-top: 2vh;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.1rem;
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--slate);
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+  }
+  .modal-close:hover { color: var(--ink); }
+
+  .modal-box h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.6rem;
+    margin: 0 0 1.4rem;
+    padding-right: 1.5rem;
+  }
+
+  .modal-box p {
+    font-size: 1.03rem;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin: 0 0 1.1rem;
+  }
+  .modal-box p:last-child { margin-bottom: 0; }
+
+  .facts {
+    background: var(--paper-dim);
+    border-left: 3px solid var(--beacon-dim);
+    padding: 1.4rem 1.6rem;
+    margin: 1.8rem 0;
+  }
+  .facts h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.05rem;
+    margin: 0 0 0.9rem;
+    color: var(--ink);
+  }
+  .facts ul { margin: 0; padding-left: 1.2rem; }
+  .facts li { margin-bottom: 0.7rem; color: var(--ink-soft); line-height: 1.6; }
+  .facts li:last-child { margin-bottom: 0; }
+
+  .ask-box {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 3px;
+    padding: 1.8rem 2rem;
+    margin-top: 2rem;
+  }
+  .ask-box h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.15rem;
+    color: var(--beacon);
+    margin: 0 0 0.8rem;
+  }
+  .ask-box p { color: #d7dce2; margin: 0; font-size: 1rem; line-height: 1.65; }
 </style>
 </head>
 <body>
@@ -220,18 +304,110 @@
 
 <main>
   <section class="stanza" id="about">
-    <h2>What we're asking for</h2>
+    <h2>A safety question, a historic-preservation question, and a question of stewardship</h2>
     <p>
-      We're not asking the Coast Guard to leave the light as it was during a pandemic-era generator swap, or to
-      resist modern equipment on principle. We're asking for the historic apparatus to be fitted with a modern
-      LED source and drive mechanism that restores the light's full sweep — the same aura mariners and
-      residents have relied on for decades, delivered with current technology.
+      Chatham Light has marked these waters since 1877. Its sweep, and the aura it cast across the water and
+      the shoreline, were not decoration — they are how this light does its work close to shore, in some of
+      the most dangerous and fastest-changing waters on the Atlantic coast.
     </p>
     <p>
-      This isn't an Old Village concern alone. It affects the whole town — its shoreline, its waterways, its
-      beaches, and everyone offshore who has used that light to find their way home.
+      This July the Coast Guard replaced the beacon with an LED unit. Since then, residents, boaters, and
+      fishermen have independently reported the same thing: Chatham Light no longer presents as it did. The
+      sweep isn't apparent, and the aura over the water and shoreline is gone. We can't measure what changed —
+      but we don't believe the right question has been asked, and we don't accept that this is simply what
+      modernization looks like.
     </p>
-    <p>
+
+    <div class="facts">
+      <h3>What we know</h3>
+      <ul>
+        <li>During the pandemic, the Coast Guard installed a temporary, lower-intensity light at Chatham Light while replacing the station's generator — stating it would remain afterward as a permanent backup to the main beacon.</li>
+        <li>In July 2026, the Coast Guard's Aids to Navigation Team replaced the original World War II-era beacon entirely with a new LED unit, citing failing, unsupportable equipment, and describing the new light as providing "the same, if not better" visibility.</li>
+        <li>Residents across town, along with boaters and fishermen, report that Chatham Light no longer presents as it did — the sweep isn't apparent and the aura over the water and shoreline is gone. This is not about how brightly-lit the town is; it's about how the light itself reads from a distance.</li>
+        <li><strong>This is not a choice between failing equipment and what's there now.</strong> Rotating optics driven by modern mechanics and lit by modern LED sources are in service at other stations — including Gay Head Light on Martha's Vineyard, where the Coast Guard adjusted a new LED beacon after residents raised concerns. Reliability and low power draw don't require giving up the sweep.</li>
+      </ul>
+    </div>
+
+    <div class="facts">
+      <h3>This isn't only about heritage — it's about near-shore navigation</h3>
+      <ul>
+        <li>Chatham Light isn't just a monument. The U.S. Coast Pilot lists it among the conspicuous landmarks for approaching Chatham Roads and Stage Harbor, and gives a course that depends on seeing it: off the entrance to Chatham Roads, steer 063° with Stage Harbor and Chatham Lights in range.</li>
+        <li>These are among the most dynamic waters on the coast. The Coast Pilot notes shoals are constantly shifting in the Chatham Harbor entrance east of the light, with extremely strong currents and surf that builds fast on the outer bar during an ebb; Nauset Beach is continually changing from erosion and shifting sands, with an unmarked and extremely dangerous break; and the Monomoy shoals shift in location and depth.</li>
+        <li>In the shoal area running from about 2.7 miles south of the light toward Monomoy, the Coast Pilot states there is <strong>no marked channel through the shoals</strong>. Where the bottom rearranges itself between surveys, charts and GPS are only as current as the last survey — and buoyage doesn't cover that ground at all. A conspicuous visual reference ashore isn't redundant there; for boats running the bar at night it's often the most reliable thing available.</li>
+      </ul>
+    </div>
+
+    <div class="facts">
+      <h3>February 18, 1952 — what these waters actually demand</h3>
+      <ul>
+        <li>BM1 Bernard Webber and three volunteers took the motor lifeboat CG36500 from the Chatham Fish Pier across Chatham Bar in a nor'easter and brought back thirty-two men from the stern of the tanker <em>Pendleton</em> — the most famous small-boat rescue in Coast Guard history.</li>
+        <li>Crossing the bar, a wave tore the compass off its mount. Webber navigated home through darkness and blinding snow with no compass at all, hunting for any light he could recognize, and found his way by a small buoy light inside the bar at the turn into Old Harbor.</li>
+        <li>The rescue is commemorated at Chatham Light today, steps from the tower. The lesson isn't that the lighthouse saved them — it's that on this bar, when instruments fail, mariners survive on what they can see. That hasn't changed. What a light looks like from the water, close in and at night, is a safety characteristic.</li>
+      </ul>
+    </div>
+
+    <div class="facts">
+      <h3>And it was done without telling anyone</h3>
+      <ul>
+        <li>Chatham Light's historic apparatus was removed and replaced with no notice to the Town of Chatham, no notice to the Historic District Commission, no consultation with the harbormaster or the commercial fishing fleet that runs this bar, and no chance for anyone to ask a question first.</li>
+        <li>Residents found out by looking at the sky. A federal agency altering the most recognized landmark in this community without informing the town that hosts it is a failure of basic stewardship — and it's why an equipment swap has become a question of public trust.</li>
+      </ul>
+    </div>
+
+    <div class="facts">
+      <h3>This is a federally protected historic property — and there are obligations that attach</h3>
+      <ul>
+        <li>Chatham Light Station was listed on the <strong>National Register of Historic Places on June 15, 1987</strong> (ref. 87001501), and is <em>separately</em> a contributing property to the Old Village Historic District, listed in 2001 (ref. 01001406). The rotating apparatus and the sweep it produced are among the features by which this station has been identified since 1877.</li>
+        <li>Removing and replacing that apparatus is an undertaking under <strong>Section 106 of the National Historic Preservation Act, 54 U.S.C. § 306108</strong>. Under <strong>36 CFR § 800.5(a)(1)</strong>, an adverse effect includes altering the characteristics that qualify a property for the National Register and introducing visual elements that diminish the integrity of its significant historic features.</li>
+        <li>Separately, <strong>54 U.S.C. §§ 306101–306102</strong> obligate the Coast Guard, as the owning agency, to manage and maintain historic properties under its control with due consideration for their historic value.</li>
+        <li>We're asking the Coast Guard to <strong>demonstrate it met these obligations</strong> — produce the determination of effect, the consultation record with the Massachusetts Historical Commission as SHPO, and any programmatic agreement relied on instead of individual review. If those records exist, this resolves quickly. If they don't, consultation should begin now and the removed apparatus should be preserved intact.</li>
+        <li>Any private owner in the Old Village Historic District would need a certificate of appropriateness before an exterior change of anything close to this magnitude. Federal property isn't subject to the Town's bylaw — but the Coast Guard shouldn't hold itself to a lower standard than the neighbors it expects to comply.</li>
+      </ul>
+    </div>
+
+    <div class="facts">
+      <h3>And it carries real economic weight</h3>
+      <ul>
+        <li>Chatham Light is the single most recognized image of this town. It anchors the Old Village Historic District and is a principal reason visitors come to Chatham at all.</li>
+        <li>The character it lends surrounding neighborhoods is reflected in property values here and in the viability of the businesses that depend on visitors. A town whose defining public asset is diminished absorbs that loss in its tax base and on its Main Street. This isn't a matter of taste.</li>
+      </ul>
+    </div>
+
+    <div class="facts">
+      <h3>Consider what this town was doing at the same time</h3>
+      <ul>
+        <li>In <strong>March 2026</strong>, after a preservation effort spanning more than fifteen years, Chatham brought home the historic Coast Guard boathouse that stood on Stage Island and watched over Stage Harbor for some seventy years — the building that housed the small rescue boats of Coast Guard Station Chatham, <strong>including CG36500</strong>, the boat that crossed the bar for the <em>Pendleton</em>.</li>
+        <li>Preservationists saved it from demolition in 2009. It sat in a shipping yard in Quincy and on the shore at Hull for years while this town found a way to bring it back. It was barged from New Bedford and lifted onto a new pier at 90 Bridge Street as the centerpiece of an <strong>$11 million waterfront project</strong> — sustained across many years by residents, donors, and town appropriation, to preserve <em>the Coast Guard's own heritage</em> in Chatham.</li>
+        <li>Four months later and about a mile away, the historic apparatus was pulled out of Chatham Light without a word to the town that had just done that work. This is a community that has demonstrated, at real cost and over more than a decade, how much it values the Service's history here. <strong>It deserved to be asked.</strong></li>
+      </ul>
+    </div>
+
+    <div class="ask-box">
+      <h3>What we're asking for</h3>
+      <p>
+        The new fixture may well hit its rated 25 nautical miles offshore. That is a different measurement from
+        near-shore conspicuity — how plainly the light reads to someone a mile or two off, looking for it
+        against the shoreline. Concentrating output tightly toward the horizon is exactly what improves the
+        offshore rating and what can diminish the near-shore presentation. If that's what happened here, this
+        isn't a light that's merely different; it's a light less suited to the waters it serves, and the wrong
+        application of the technology at this station. We're asking the Coast Guard to publish the installed
+        beam characteristics against the prior beacon's, state whether near-shore conspicuity was ever
+        evaluated, confirm whether Section 106 historic review was conducted, conduct a night on-water
+        assessment with local mariners aboard, and — if there's a shortfall — remediate it with a rotating
+        optic using a modern LED source and modern drive mechanics, so reliability and the sweep are both
+        preserved.
+      </p>
+      <p style="margin-top:1rem;">
+        <strong>And bring the parts home.</strong> Every component removed from Chatham Light — the beacon, its
+        optic, its drive mechanism — should be accounted for, preserved intact, and returned to Chatham. Nothing
+        should be scrapped, surplussed, or dispersed while these questions are open. The Coast Guard has
+        long-standing mechanisms for placing historic aids-to-navigation equipment with local stewards, and both
+        the Chatham Marconi Maritime Center and the Atwood House Museum are prepared to receive and conserve it.
+        This equipment belongs in the town whose harbor it served.
+      </p>
+    </div>
+
+    <p style="margin-top:2rem;">
       Chatham First Light is a group of residents, boaters, and fishermen raising this with the town first —
       the Select Board, the Historical Society, the Historic Commission — and then, if needed, with our
       Congressional delegation and a formal letter to the Coast Guard Commandant. Every name on this list
@@ -305,6 +481,29 @@
 </footer>
 
 <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
+<div class="modal-overlay" id="statementModal" onclick="if(event.target===this) this.style.display='none'">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('statementModal').style.display='none'" aria-label="Close">&times;</button>
+    <h2>What we're asking for</h2>
+    <p>
+      We're not asking the Coast Guard to leave the light as it was during a pandemic-era generator swap, or to
+      resist modern equipment on principle. We're asking for the historic apparatus to be fitted with a modern
+      LED source and drive mechanism that restores the light's full sweep — the same aura mariners and
+      residents have relied on for decades, delivered with current technology.
+    </p>
+    <p>
+      This isn't an Old Village concern alone. It affects the whole town — its shoreline, its waterways, its
+      beaches, and everyone offshore who has used that light to find their way home.
+    </p>
+    <p>
+      Chatham First Light is a group of residents, boaters, and fishermen raising this with the town first —
+      the Select Board, the Historical Society, the Historic Commission — and then, if needed, with our
+      Congressional delegation and a formal letter to the Coast Guard Commandant. Every name on this list
+      becomes part of that record.
+    </p>
+  </div>
+</div>
 
 <script>
   const form = document.getElementById('signForm');
