@@ -547,20 +547,14 @@
     <h2 style="font-family:'Fraunces',serif;font-weight:500;font-size:1.4rem;margin:0 0 1.4rem;">Supporters</h2>
 
     <h3 style="font-family:'Source Serif 4',serif;text-transform:uppercase;letter-spacing:0.08em;font-size:0.8rem;color:var(--slate);margin:0 0 0.8rem;">Organizations</h3>
-    <ul style="list-style:none;padding:0;margin:0 0 2rem;display:grid;gap:0.6rem;">
-      <li style="padding:0.9rem 1rem;background:var(--paper-dim);border-radius:2px;">Chatham Historical Society <span style="color:var(--slate);font-size:0.85rem;">(confirming)</span></li>
-      <li style="padding:0.9rem 1rem;background:var(--paper-dim);border-radius:2px;">Chatham Marconi Maritime Center <span style="color:var(--slate);font-size:0.85rem;">(confirming)</span></li>
-      <li style="padding:0.9rem 1rem;background:var(--paper-dim);border-radius:2px;">Cape Cod Commercial Fishermen's Alliance <span style="color:var(--slate);font-size:0.85rem;">(confirming)</span></li>
-    </ul>
-    <p style="font-size:0.9rem;color:var(--slate);margin:-1.2rem 0 2rem;">Full list of organizational supporters coming soon.</p>
+    <div id="orgList" style="margin-bottom:2rem;">
+      <p style="color:var(--slate);font-style:italic;">Loading…</p>
+    </div>
 
     <h3 style="font-family:'Source Serif 4',serif;text-transform:uppercase;letter-spacing:0.08em;font-size:0.8rem;color:var(--slate);margin:0 0 0.8rem;">Businesses</h3>
-    <ul style="list-style:none;padding:0;margin:0 0 2rem;display:grid;gap:0.6rem;">
-      <li style="padding:0.9rem 1rem;background:var(--paper-dim);border-radius:2px;">The Squire <span style="color:var(--slate);font-size:0.85rem;">(confirming)</span></li>
-      <li style="padding:0.9rem 1rem;background:var(--paper-dim);border-radius:2px;">Chatham Candy Manor <span style="color:var(--slate);font-size:0.85rem;">(confirming)</span></li>
-      <li style="padding:0.9rem 1rem;background:var(--paper-dim);border-radius:2px;">Whitla Brothers Builders <span style="color:var(--slate);font-size:0.85rem;">(confirming)</span></li>
-    </ul>
-    <p style="font-size:0.9rem;color:var(--slate);margin:-1.2rem 0 2rem;">Full list of business supporters coming soon.</p>
+    <div id="bizList" style="margin-bottom:2rem;">
+      <p style="color:var(--slate);font-style:italic;">Loading…</p>
+    </div>
 
     <h3 style="font-family:'Source Serif 4',serif;text-transform:uppercase;letter-spacing:0.08em;font-size:0.8rem;color:var(--slate);margin:0 0 0.8rem;">Residents &amp; Interested Community Members</h3>
     <p style="font-size:1rem;color:var(--ink-soft);">
@@ -673,22 +667,60 @@
           location: location,
           reason: cellText(c, idx.reason)
         };
-      }).filter(e => e.name && (e.category === 'Individual' || e.category === 'Individual-Chatham Resident' || e.category === '')).reverse();
+      }).filter(e => e.name).reverse();
 
-      if (entries.length === 0) {
-        signerListEl.innerHTML = `<p style="color:var(--slate);font-style:italic;">No individual signatures matched. [debug: ${rows.length} total rows found, columns detected: ${cols.map(c=>c.label).join(' | ')}]</p>`;
-        return;
-      }
+      const individuals = entries.filter(e => e.category === 'Individual' || e.category === 'Individual-Chatham Resident' || e.category === '');
+      const orgs = entries.filter(e => e.category === 'Organization');
+      const bizzes = entries.filter(e => e.category === 'Business');
 
-      signerListEl.innerHTML = entries.map(e => `
-        <div style="padding:1rem 0;border-bottom:1px dashed var(--line);">
-          <div style="font-weight:600;">${escapeHtml(e.name)}<span style="font-weight:400;color:var(--slate);"> — ${escapeHtml(e.location)}</span></div>
-          ${e.reason ? `<div style="margin-top:0.3rem;color:var(--ink-soft);font-style:italic;">"${escapeHtml(e.reason)}"</div>` : ''}
-        </div>
-      `).join('');
+      renderCompressedList(signerListEl, individuals, 10, 'signature', renderPersonRow);
+      renderCompressedList(document.getElementById('orgList'), orgs, 8, 'organization', renderSupporterRow);
+      renderCompressedList(document.getElementById('bizList'), bizzes, 8, 'business', renderSupporterRow);
     } catch (err) {
-      signerListEl.innerHTML = `<p style="color:var(--slate);font-style:italic;">[debug: fetch/parse error — ${escapeHtml(err.message || String(err))}]</p>`;
+      const msg = `<p style="color:var(--slate);font-style:italic;">Signatures are loading — check back in a moment.</p>`;
+      signerListEl.innerHTML = msg;
+      const orgEl = document.getElementById('orgList');
+      const bizEl = document.getElementById('bizList');
+      if (orgEl) orgEl.innerHTML = msg;
+      if (bizEl) bizEl.innerHTML = msg;
     }
+  }
+
+  function renderPersonRow(e) {
+    return `
+      <div style="padding:1rem 0;border-bottom:1px dashed var(--line);">
+        <div style="font-weight:600;">${escapeHtml(e.name)}<span style="font-weight:400;color:var(--slate);"> — ${escapeHtml(e.location)}</span></div>
+        ${e.reason ? `<div style="margin-top:0.3rem;color:var(--ink-soft);font-style:italic;">"${escapeHtml(e.reason)}"</div>` : ''}
+      </div>`;
+  }
+
+  function renderSupporterRow(e) {
+    return `
+      <div style="padding:0.9rem 1rem;background:var(--paper-dim);border-radius:2px;margin-bottom:0.6rem;">
+        <div style="font-weight:600;">${escapeHtml(e.name)}</div>
+        ${e.reason ? `<div style="margin-top:0.3rem;color:var(--ink-soft);font-style:italic;">"${escapeHtml(e.reason)}"</div>` : ''}
+      </div>`;
+  }
+
+  function renderCompressedList(container, items, previewCount, label, rowFn) {
+    if (!container) return;
+    if (items.length === 0) {
+      container.innerHTML = `<p style="color:var(--slate);font-style:italic;">No ${label}s yet.</p>`;
+      return;
+    }
+    const preview = items.slice(0, previewCount);
+    const rest = items.slice(previewCount);
+    let html = preview.map(rowFn).join('');
+    if (rest.length > 0) {
+      const restId = 'rest_' + Math.random().toString(36).slice(2, 8);
+      html += `
+        <div id="${restId}" style="display:none;">${rest.map(rowFn).join('')}</div>
+        <button type="button" class="btn btn-ghost" style="border-color:var(--line);color:var(--ink);margin-top:0.8rem;font-size:0.9rem;padding:0.6rem 1.2rem;"
+          onclick="const el=document.getElementById('${restId}'); const open = el.style.display==='block'; el.style.display = open ? 'none' : 'block'; this.textContent = open ? 'See all ${items.length} ${label}s →' : 'Show fewer ↑';">
+          See all ${items.length} ${label}s →
+        </button>`;
+    }
+    container.innerHTML = html;
   }
 
   loadSigners();
