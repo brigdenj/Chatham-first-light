@@ -622,25 +622,49 @@
       const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
       const data = JSON.parse(jsonText);
       const rows = data.table.rows || [];
+      const cols = data.table.cols || [];
 
-      // Columns, by form order: 0 Timestamp, 1 Full name, 2 Signing as, 3 Email, 4 Town/state, 5 Street address, 6 Phone, 7 Reason
+      // Find each column by matching its actual header text (case-insensitive,
+      // partial match), instead of assuming a fixed position — Google Sheets
+      // appends new form questions as new columns wherever they land, not
+      // necessarily in question order.
+      function findCol(...keywords) {
+        for (let i = 0; i < cols.length; i++) {
+          const label = (cols[i].label || '').toLowerCase();
+          if (keywords.some(k => label.includes(k))) return i;
+        }
+        return -1;
+      }
+
+      const idx = {
+        name: findCol('full name', 'name'),
+        category: findCol('signing as'),
+        town: findCol('town'),
+        street: findCol('street'),
+        reason: findCol('mean to you', 'quote', 'support')
+      };
+
       function streetOnly(addr) {
         if (!addr) return '';
         // strip a leading house number so only the street name shows publicly
         return String(addr).replace(/^\s*\d+[\s,-]*/, '').trim();
       }
 
+      function cellText(c, i) {
+        return (i >= 0 && c[i]) ? (c[i].f || c[i].v || '') : '';
+      }
+
       const entries = rows.map(r => {
         const c = r.c;
-        const category = c[2] ? c[2].v : '';
-        const town = c[4] ? c[4].v : '';
-        const street = c[5] ? c[5].v : '';
+        const category = cellText(c, idx.category);
+        const town = cellText(c, idx.town);
+        const street = cellText(c, idx.street);
         const location = category === 'Individual-Chatham Resident' ? streetOnly(street) : town;
         return {
-          name: c[1] ? c[1].v : '',
+          name: cellText(c, idx.name),
           category: category,
           location: location,
-          reason: c[7] ? c[7].v : ''
+          reason: cellText(c, idx.reason)
         };
       }).filter(e => e.name && (e.category === 'Individual' || e.category === 'Individual-Chatham Resident')).reverse();
 
