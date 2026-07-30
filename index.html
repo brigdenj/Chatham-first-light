@@ -39,29 +39,64 @@
     color: var(--paper);
     overflow: hidden;
     padding: 5rem 1.5rem 6rem;
+    --beacon-x: 60%;
+    --beacon-y: 20%;
   }
 
   .beam-field::before {
     content: "";
     position: absolute;
-    top: -40%;
-    left: 50%;
-    width: 220vmax;
-    height: 220vmax;
+    top: var(--beacon-y);
+    left: var(--beacon-x);
+    width: 90vmax;
+    height: 90vmax;
     background: conic-gradient(
       from 0deg,
       transparent 0deg,
-      transparent 350deg,
-      rgba(226, 165, 52, 0.55) 357deg,
-      rgba(226, 165, 52, 0.9) 360deg
+      transparent 298deg,
+      rgba(226, 165, 52, 0.7) 299deg,
+      rgba(255, 232, 180, 0.95) 300deg,
+      transparent 301deg,
+      transparent 357deg,
+      rgba(226, 165, 52, 0.75) 358deg,
+      rgba(255, 232, 180, 0.98) 359deg,
+      transparent 360deg
     );
+    -webkit-mask-image: radial-gradient(circle at center, black 0%, black 3%, rgba(0,0,0,0.4) 10%, transparent 26%);
+    mask-image: radial-gradient(circle at center, black 0%, black 3%, rgba(0,0,0,0.4) 10%, transparent 26%);
     transform-origin: center center;
-    transform: translate(-50%, 0) rotate(0deg);
-    animation: sweep 8s linear infinite;
-    opacity: 0.65;
+    transform: translate(-50%, -50%) rotate(0deg);
+    animation: sweep 12s linear infinite;
+    filter: blur(1px);
+    opacity: 0.9;
   }
 
-  @keyframes sweep { to { transform: translate(-50%, 0) rotate(360deg); } }
+  /* the lamp itself: a small fixed glow at the beacon point, pulsing twice per rotation */
+  .beam-field::after {
+    content: "";
+    position: absolute;
+    top: var(--beacon-y);
+    left: var(--beacon-x);
+    width: 1.6vmax;
+    height: 1.6vmax;
+    min-width: 8px;
+    min-height: 8px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,232,180,1) 0%, rgba(226,165,52,0.6) 45%, transparent 75%);
+    box-shadow: 0 0 18px 6px rgba(226,165,52,0.5);
+    animation: flash 12s linear infinite;
+  }
+
+
+  /* rotate(360deg) turns clockwise as viewed on screen */
+  @keyframes sweep { to { transform: translate(-50%, -50%) rotate(360deg); } }
+  @keyframes flash {
+    0%, 81%, 100% { box-shadow: 0 0 18px 6px rgba(226,165,52,0.5); opacity: 0.85; }
+    83.3% { box-shadow: 0 0 32px 12px rgba(255,232,180,0.95); opacity: 1; }
+    85%   { box-shadow: 0 0 18px 6px rgba(226,165,52,0.5); opacity: 0.85; }
+    98.5% { box-shadow: 0 0 34px 14px rgba(255,232,180,0.98); opacity: 1; }
+  }
   @media (prefers-reduced-motion: reduce) { .beam-field::before { animation: none; } }
 
   .beam-inner {
@@ -289,6 +324,9 @@
 <div class="beam-field">
   <div class="beam-inner">
     <div class="eyebrow">Chatham First Light</div>
+    <p style="color:var(--beacon);font-size:0.95rem;letter-spacing:0.02em;margin:-0.6rem 0 1.4rem;font-family:'Source Serif 4',serif;">
+      A community campaign to restore the original sweep of Chatham Lighthouse's beacon
+    </p>
     <h1>Chatham Light has swept this shoreline for eighty years. <em>Help us keep it that way.</em></h1>
     <p class="lede">
       This July, the Coast Guard replaced Chatham Light's beacon with a new LED unit. The old light cast a
@@ -316,7 +354,8 @@
       fishermen have independently reported the same thing: Chatham Light no longer presents as it did. The
       sweep isn't apparent, and the aura over the water and shoreline is gone. We can't measure what changed —
       but we don't believe the right question has been asked, and we don't accept that this is simply what
-      modernization looks like.
+      modernization looks like. This concern is shared across the community — by residents, local
+      organizations, and local businesses alike.
     </p>
     <p>
       We're not asking the Coast Guard to leave the light exactly as it was during a pandemic-era generator
@@ -333,7 +372,7 @@
         <li>During the pandemic, the Coast Guard installed a temporary, lower-intensity light at Chatham Light while replacing the station's generator — stating it would remain afterward as a permanent backup to the main beacon.</li>
         <li>In July 2026, the Coast Guard's Aids to Navigation Team replaced the original World War II-era beacon entirely with a new LED unit, citing failing, unsupportable equipment, and describing the new light as providing "the same, if not better" visibility.</li>
         <li>Residents across town, along with boaters and fishermen, report that Chatham Light no longer presents as it did — the sweep isn't apparent and the aura over the water and shoreline is gone. This is not about how brightly-lit the town is; it's about how the light itself reads from a distance.</li>
-        <li><strong>This is not a choice between failing equipment and what's there now.</strong> Rotating optics driven by modern mechanics and lit by modern LED sources are in service at other stations — including Gay Head Light on Martha's Vineyard, where the Coast Guard adjusted a new LED beacon after residents raised concerns. Reliability and low power draw don't require giving up the sweep.</li>
+        <li><strong>This is not a choice between failing equipment and what's there now.</strong> Rotating optics driven by modern mechanics and lit by modern LED sources are in service at other stations — including Gay Head Light on Martha's Vineyard, where residents raised concerns after a new LED beacon installed in June 2025 rotated the wrong way with an inconsistent flash pattern. The Coast Guard didn't defend the new equipment — it pulled the beacon, sent it back to its Woods Hole shop, and corrected the rotation and pattern. Reliability and low power draw don't require giving up the sweep.</li>
       </ul>
     </div>
 
@@ -394,7 +433,7 @@
     <div class="ask-box">
       <h3>What we're asking for</h3>
       <p>
-        The new fixture may well hit its rated 25 nautical miles offshore. That is a different measurement from
+        The new fixture may well hit its rated 24 nautical miles offshore. That is a different measurement from
         near-shore conspicuity — how plainly the light reads to someone a mile or two off, looking for it
         against the shoreline. Concentrating output tightly toward the horizon is exactly what improves the
         offshore rating and what can diminish the near-shore presentation. If that's what happened here, this
@@ -422,7 +461,8 @@
       Chatham First Light is a group of residents, boaters, and fishermen raising this with the town first —
       the Select Board, the Historical Society, the Historic Commission — and then, if needed, with our
       Congressional delegation and a formal letter to the Coast Guard Commandant. Every name on this list
-      becomes part of that record.
+      becomes part of that record, alongside a growing list of local organizations and businesses who've
+      added their support — see below.
     </p>
   </section>
 
@@ -436,28 +476,47 @@
       method="POST"
       target="hidden_iframe">
 
-      <div class="field-row">
+      <div>
+        <label for="fCategory">I'm signing as</label>
+        <select id="fCategory" name="entry.770705135" required style="width:100%;font-family:'Source Serif 4',serif;font-size:1rem;padding:0.7rem 0.8rem;border:1px solid var(--line);border-radius:2px;background:var(--paper);color:var(--ink);">
+          <option value="">Choose one…</option>
+          <option value="Individual-Chatham Resident">Individual — Chatham resident</option>
+          <option value="Individual">Individual — not a Chatham resident</option>
+          <option value="Organization">Organization</option>
+          <option value="Business">Business</option>
+        </select>
+      </div>
+
+      <div class="field-row" style="margin-top:1rem;">
         <div>
-          <label for="fName">Full name</label>
+          <label for="fName" id="fNameLabel">Full name</label>
           <input type="text" id="fName" name="entry.118029719" required autocomplete="name" placeholder="Jane Doe">
         </div>
         <div>
-          <label for="fTown">Town, state</label>
-          <input type="text" id="fTown" name="entry.176475185" required autocomplete="address-level2" placeholder="Chatham, MA">
+          <label for="fEmail">Email <span style="text-transform:none;letter-spacing:0;">(kept private)</span></label>
+          <input type="email" id="fEmail" name="entry.1212239197" autocomplete="email" placeholder="jane@example.com">
         </div>
       </div>
-      <div class="field-row">
-        <div>
+
+      <div id="individualFields">
+        <div class="field-row">
+          <div>
+            <label for="fTown" id="fTownLabel">Town, state</label>
+            <input type="text" id="fTown" name="entry.176475185" autocomplete="address-level2" placeholder="Chatham, MA">
+          </div>
+          <div>
+            <label for="fPhone">Phone number <span style="text-transform:none;letter-spacing:0;">(kept private)</span></label>
+            <input type="tel" id="fPhone" name="entry.1466849427" autocomplete="tel" placeholder="(508) 555-0100">
+          </div>
+        </div>
+        <div id="streetFieldWrap">
           <label for="fAddress">Street address <span style="text-transform:none;letter-spacing:0;">(kept private)</span></label>
-          <input type="text" id="fAddress" name="entry.1400945880" required autocomplete="street-address" placeholder="520 Cotton Street">
-        </div>
-        <div>
-          <label for="fPhone">Phone number <span style="text-transform:none;letter-spacing:0;">(kept private)</span></label>
-          <input type="tel" id="fPhone" name="entry.1466849427" autocomplete="tel" placeholder="(508) 555-0100">
+          <input type="text" id="fAddress" name="entry.1400945880" autocomplete="street-address" placeholder="520 Cotton Street">
         </div>
       </div>
+
       <div>
-        <label for="fReason">What does Chatham Light mean to you? <span style="text-transform:none;letter-spacing:0;">(shown publicly with your name)</span></label>
+        <label for="fReason" id="fReasonLabel">What does Chatham Light mean to you? <span style="text-transform:none;letter-spacing:0;">(shown publicly with your name)</span></label>
         <input type="text" id="fReason" name="entry.1021919658" placeholder="e.g. I've navigated by that sweep for twenty years of night sails.">
       </div>
       <div class="submit-row">
@@ -480,6 +539,33 @@
     <div id="signerList">
       <p style="color:var(--slate);font-style:italic;">Loading signatures…</p>
     </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="supporters" id="supporters">
+    <h2 style="font-family:'Fraunces',serif;font-weight:500;font-size:1.4rem;margin:0 0 1.4rem;">Supporters</h2>
+
+    <h3 style="font-family:'Source Serif 4',serif;text-transform:uppercase;letter-spacing:0.08em;font-size:0.8rem;color:var(--slate);margin:0 0 0.8rem;">Organizations</h3>
+    <ul style="list-style:none;padding:0;margin:0 0 2rem;display:grid;gap:0.6rem;">
+      <li style="padding:0.9rem 1rem;background:var(--paper-dim);border-radius:2px;">Chatham Historical Society <span style="color:var(--slate);font-size:0.85rem;">(confirming)</span></li>
+      <li style="padding:0.9rem 1rem;background:var(--paper-dim);border-radius:2px;">Chatham Marconi Maritime Center <span style="color:var(--slate);font-size:0.85rem;">(confirming)</span></li>
+      <li style="padding:0.9rem 1rem;background:var(--paper-dim);border-radius:2px;">Cape Cod Commercial Fishermen's Alliance <span style="color:var(--slate);font-size:0.85rem;">(confirming)</span></li>
+    </ul>
+    <p style="font-size:0.9rem;color:var(--slate);margin:-1.2rem 0 2rem;">Full list of organizational supporters coming soon.</p>
+
+    <h3 style="font-family:'Source Serif 4',serif;text-transform:uppercase;letter-spacing:0.08em;font-size:0.8rem;color:var(--slate);margin:0 0 0.8rem;">Businesses</h3>
+    <ul style="list-style:none;padding:0;margin:0 0 2rem;display:grid;gap:0.6rem;">
+      <li style="padding:0.9rem 1rem;background:var(--paper-dim);border-radius:2px;">The Squire <span style="color:var(--slate);font-size:0.85rem;">(confirming)</span></li>
+      <li style="padding:0.9rem 1rem;background:var(--paper-dim);border-radius:2px;">Chatham Candy Manor <span style="color:var(--slate);font-size:0.85rem;">(confirming)</span></li>
+      <li style="padding:0.9rem 1rem;background:var(--paper-dim);border-radius:2px;">Whitla Brothers Builders <span style="color:var(--slate);font-size:0.85rem;">(confirming)</span></li>
+    </ul>
+    <p style="font-size:0.9rem;color:var(--slate);margin:-1.2rem 0 2rem;">Full list of business supporters coming soon.</p>
+
+    <h3 style="font-family:'Source Serif 4',serif;text-transform:uppercase;letter-spacing:0.08em;font-size:0.8rem;color:var(--slate);margin:0 0 0.8rem;">Residents &amp; Interested Community Members</h3>
+    <p style="font-size:1rem;color:var(--ink-soft);">
+      <a href="#signers" style="color:var(--beacon);font-weight:600;">See the full list of signatures →</a>
+    </p>
   </section>
 </main>
 
@@ -537,7 +623,7 @@
       const data = JSON.parse(jsonText);
       const rows = data.table.rows || [];
 
-      // Columns, by form order: 0 Timestamp, 1 Full name, 2 Town/state, 3 Street address, 4 Phone, 5 Reason
+      // Columns, by form order: 0 Timestamp, 1 Full name, 2 Signing as, 3 Email, 4 Town/state, 5 Street address, 6 Phone, 7 Reason
       function streetOnly(addr) {
         if (!addr) return '';
         // strip a leading house number so only the street name shows publicly
@@ -546,12 +632,17 @@
 
       const entries = rows.map(r => {
         const c = r.c;
+        const category = c[2] ? c[2].v : '';
+        const town = c[4] ? c[4].v : '';
+        const street = c[5] ? c[5].v : '';
+        const location = category === 'Individual-Chatham Resident' ? streetOnly(street) : town;
         return {
           name: c[1] ? c[1].v : '',
-          street: streetOnly(c[3] ? c[3].v : ''),
-          reason: c[5] ? c[5].v : ''
+          category: category,
+          location: location,
+          reason: c[7] ? c[7].v : ''
         };
-      }).filter(e => e.name).reverse();
+      }).filter(e => e.name && (e.category === 'Individual' || e.category === 'Individual-Chatham Resident')).reverse();
 
       if (entries.length === 0) {
         signerListEl.innerHTML = '<p style="color:var(--slate);font-style:italic;">Be the first to add your name.</p>';
@@ -560,7 +651,7 @@
 
       signerListEl.innerHTML = entries.map(e => `
         <div style="padding:1rem 0;border-bottom:1px dashed var(--line);">
-          <div style="font-weight:600;">${escapeHtml(e.name)}<span style="font-weight:400;color:var(--slate);"> — ${escapeHtml(e.street)}</span></div>
+          <div style="font-weight:600;">${escapeHtml(e.name)}<span style="font-weight:400;color:var(--slate);"> — ${escapeHtml(e.location)}</span></div>
           ${e.reason ? `<div style="margin-top:0.3rem;color:var(--ink-soft);font-style:italic;">"${escapeHtml(e.reason)}"</div>` : ''}
         </div>
       `).join('');
@@ -570,6 +661,35 @@
   }
 
   loadSigners();
+
+  // --- Category-based field toggling ---
+  const fCategory = document.getElementById('fCategory');
+  const individualFields = document.getElementById('individualFields');
+  const streetFieldWrap = document.getElementById('streetFieldWrap');
+  const fNameLabel = document.getElementById('fNameLabel');
+  const fTownLabel = document.getElementById('fTownLabel');
+  const fReasonLabel = document.getElementById('fReasonLabel');
+  const fAddress = document.getElementById('fAddress');
+
+  if (fCategory) {
+    fCategory.addEventListener('change', function () {
+      const val = fCategory.value;
+      const isOrgOrBiz = (val === 'Organization' || val === 'Business');
+      const isChathamResident = (val === 'Individual-Chatham Resident');
+
+      individualFields.style.display = isOrgOrBiz ? 'none' : 'block';
+      if (fAddress) fAddress.required = false; // never hard-require; site logic decides what's shown
+      if (streetFieldWrap) streetFieldWrap.style.display = isChathamResident ? 'block' : 'none';
+
+      if (isOrgOrBiz) {
+        fNameLabel.textContent = val === 'Organization' ? 'Organization name' : 'Business name';
+        fReasonLabel.innerHTML = 'A sentence of support to quote publicly <span style="text-transform:none;letter-spacing:0;">(optional)</span>';
+      } else {
+        fNameLabel.textContent = 'Full name';
+        fReasonLabel.innerHTML = 'What does Chatham Light mean to you? <span style="text-transform:none;letter-spacing:0;">(shown publicly with your name)</span>';
+      }
+    });
+  }
 
   // --- Read the full background toggle (single control, in the hero) ---
   const fullBackground = document.getElementById('fullBackground');
