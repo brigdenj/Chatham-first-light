@@ -555,11 +555,6 @@
     <div id="bizList" style="margin-bottom:2rem;">
       <p style="color:var(--slate);font-style:italic;">Loading…</p>
     </div>
-
-    <h3 style="font-family:'Source Serif 4',serif;text-transform:uppercase;letter-spacing:0.08em;font-size:0.8rem;color:var(--slate);margin:0 0 0.8rem;">Residents &amp; Interested Community Members</h3>
-    <p style="font-size:1rem;color:var(--ink-soft);">
-      <a href="#signers" style="color:var(--beacon);font-weight:600;">See the full list of signatures →</a>
-    </p>
   </section>
 </main>
 
@@ -669,7 +664,9 @@
         };
       }).filter(e => e.name).reverse();
 
-      const individuals = entries.filter(e => e.category === 'Individual' || e.category === 'Individual-Chatham Resident' || e.category === '');
+      const individuals = entries
+        .filter(e => e.category === 'Individual' || e.category === 'Individual-Chatham Resident' || e.category === '')
+        .sort((a, b) => (a.category === 'Individual-Chatham Resident' ? 0 : 1) - (b.category === 'Individual-Chatham Resident' ? 0 : 1));
       const orgs = entries.filter(e => e.category === 'Organization');
       const bizzes = entries.filter(e => e.category === 'Business');
 
