@@ -648,26 +648,15 @@
         };
       }).filter(e => e.name).reverse();
 
-      const SEED_ORGS = [
-        { name: 'Chatham Historical Society', confirming: true },
-        { name: 'Chatham Marconi Maritime Center', confirming: true },
-        { name: "Cape Cod Commercial Fishermen's Alliance", confirming: true }
-      ];
-      const SEED_BIZ = [
-        { name: 'The Squire', confirming: true },
-        { name: 'Chatham Candy Manor', confirming: true },
-        { name: 'Whitla Brothers Builders', confirming: true }
-      ];
-
       const individuals = entries
         .filter(e => e.category === 'Individual' || e.category === 'Individual-Chatham Resident' || e.category === '')
         .sort((a, b) => (a.category === 'Individual-Chatham Resident' ? 0 : 1) - (b.category === 'Individual-Chatham Resident' ? 0 : 1));
-      const orgs = SEED_ORGS.concat(entries.filter(e => e.category === 'Organization'));
-      const bizzes = SEED_BIZ.concat(entries.filter(e => e.category === 'Business'));
+      const orgs = entries.filter(e => e.category === 'Organization');
+      const bizzes = entries.filter(e => e.category === 'Business');
 
-      renderCompressedList(signerListEl, individuals, 10, 'signatures', renderPersonRow, 'See the full list of residents and interested community members →');
-      renderCompressedList(document.getElementById('orgList'), orgs, 8, 'organizations', renderSupporterRow);
-      renderCompressedList(document.getElementById('bizList'), bizzes, 8, 'businesses', renderSupporterRow);
+      renderCompressedList(signerListEl, individuals, 10, 'signatures', renderPersonRow, 'See the full list of residents and interested community members →', 'Be the first to add your name.');
+      renderCompressedList(document.getElementById('orgList'), orgs, 8, 'organizations', renderSupporterRow, null, 'Organizations pending review.');
+      renderCompressedList(document.getElementById('bizList'), bizzes, 8, 'businesses', renderSupporterRow, null, 'Businesses pending review.');
     } catch (err) {
       const msg = `<p style="color:var(--slate);font-style:italic;">Signatures are loading — check back in a moment.</p>`;
       signerListEl.innerHTML = msg;
@@ -694,10 +683,10 @@
       </div>`;
   }
 
-  function renderCompressedList(container, items, previewCount, labelPlural, rowFn, expandText) {
+  function renderCompressedList(container, items, previewCount, labelPlural, rowFn, expandText, emptyText) {
     if (!container) return;
     if (items.length === 0) {
-      container.innerHTML = `<p style="color:var(--slate);font-style:italic;">No ${labelPlural} yet.</p>`;
+      container.innerHTML = `<p style="color:var(--slate);font-style:italic;">${emptyText || `No ${labelPlural} yet.`}</p>`;
       return;
     }
     const preview = items.slice(0, previewCount);
