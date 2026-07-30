@@ -298,7 +298,7 @@
     </p>
     <div class="cta-row">
       <a href="#register" class="btn btn-primary">Add your name</a>
-      <a href="#about" class="btn btn-ghost">Read the full statement</a>
+      <a href="#about" class="btn btn-ghost" id="heroReadMore">Read the full statement</a>
     </div>
   </div>
 </div>
@@ -495,29 +495,6 @@
 
 <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 
-<div class="modal-overlay" id="statementModal" onclick="if(event.target===this) this.style.display='none'">
-  <div class="modal-box">
-    <button class="modal-close" onclick="document.getElementById('statementModal').style.display='none'" aria-label="Close">&times;</button>
-    <h2>What we're asking for</h2>
-    <p>
-      We're not asking the Coast Guard to leave the light as it was during a pandemic-era generator swap, or to
-      resist modern equipment on principle. We're asking for the historic apparatus to be fitted with a modern
-      LED source and drive mechanism that restores the light's full sweep — the same aura mariners and
-      residents have relied on for decades, delivered with current technology.
-    </p>
-    <p>
-      This isn't an Old Village concern alone. It affects the whole town — its shoreline, its waterways, its
-      beaches, and everyone offshore who has used that light to find their way home.
-    </p>
-    <p>
-      Chatham First Light is a group of residents, boaters, and fishermen raising this with the town first —
-      the Select Board, the Historical Society, the Historic Commission — and then, if needed, with our
-      Congressional delegation and a formal letter to the Coast Guard Commandant. Every name on this list
-      becomes part of that record.
-    </p>
-  </div>
-</div>
-
 <script>
   const form = document.getElementById('signForm');
   const submitBtn = document.getElementById('submitBtn');
@@ -599,12 +576,23 @@
   // --- Read the full background toggle ---
   const expandBtn = document.getElementById('expandBtn');
   const fullBackground = document.getElementById('fullBackground');
+
+  function expandBackground() {
+    fullBackground.style.display = 'block';
+    if (expandBtn) expandBtn.textContent = 'Show less ↑';
+  }
+
   if (expandBtn && fullBackground) {
     expandBtn.addEventListener('click', function () {
       const isOpen = fullBackground.style.display === 'block';
       fullBackground.style.display = isOpen ? 'none' : 'block';
       expandBtn.textContent = isOpen ? 'Read the full background ↓' : 'Show less ↑';
     });
+  }
+
+  const heroReadMore = document.getElementById('heroReadMore');
+  if (heroReadMore) {
+    heroReadMore.addEventListener('click', expandBackground);
   }
 </script>
 
