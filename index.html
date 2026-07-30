@@ -676,7 +676,7 @@
       }).filter(e => e.name && (e.category === 'Individual' || e.category === 'Individual-Chatham Resident' || e.category === '')).reverse();
 
       if (entries.length === 0) {
-        signerListEl.innerHTML = '<p style="color:var(--slate);font-style:italic;">Be the first to add your name.</p>';
+        signerListEl.innerHTML = `<p style="color:var(--slate);font-style:italic;">No individual signatures matched. [debug: ${rows.length} total rows found, columns detected: ${cols.map(c=>c.label).join(' | ')}]</p>`;
         return;
       }
 
@@ -687,7 +687,7 @@
         </div>
       `).join('');
     } catch (err) {
-      signerListEl.innerHTML = '<p style="color:var(--slate);font-style:italic;">Signatures are loading — check back in a moment.</p>';
+      signerListEl.innerHTML = `<p style="color:var(--slate);font-style:italic;">[debug: fetch/parse error — ${escapeHtml(err.message || String(err))}]</p>`;
     }
   }
 
