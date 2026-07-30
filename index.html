@@ -326,8 +326,6 @@
       the safety analysis, the historic-preservation review, and a real answer for why the town wasn't told.
     </p>
 
-    <button type="button" id="expandBtn" class="btn btn-ghost" style="border-color:var(--line);color:var(--ink);margin:0.6rem 0 0;">Read the full background ↓</button>
-
     <div id="fullBackground" style="display:none; margin-top:2rem;">
     <div class="facts">
       <h3>What we know</h3>
@@ -573,26 +571,16 @@
 
   loadSigners();
 
-  // --- Read the full background toggle ---
-  const expandBtn = document.getElementById('expandBtn');
+  // --- Read the full background toggle (single control, in the hero) ---
   const fullBackground = document.getElementById('fullBackground');
+  const heroReadMore = document.getElementById('heroReadMore');
 
-  function expandBackground() {
-    fullBackground.style.display = 'block';
-    if (expandBtn) expandBtn.textContent = 'Show less ↑';
-  }
-
-  if (expandBtn && fullBackground) {
-    expandBtn.addEventListener('click', function () {
+  if (heroReadMore && fullBackground) {
+    heroReadMore.addEventListener('click', function () {
       const isOpen = fullBackground.style.display === 'block';
       fullBackground.style.display = isOpen ? 'none' : 'block';
-      expandBtn.textContent = isOpen ? 'Read the full background ↓' : 'Show less ↑';
+      heroReadMore.textContent = isOpen ? 'Read the full statement' : 'Show less ↑';
     });
-  }
-
-  const heroReadMore = document.getElementById('heroReadMore');
-  if (heroReadMore) {
-    heroReadMore.addEventListener('click', expandBackground);
   }
 </script>
 
