@@ -616,7 +616,7 @@
 
   async function loadSigners() {
     try {
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1`;
       const res = await fetch(url);
       const text = await res.text();
       const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
@@ -644,6 +644,13 @@
         reason: findCol('mean to you', 'quote', 'support')
       };
 
+      // Safety net: if header labels weren't detected (e.g. Google didn't
+      // recognize row 1 as a header), fall back to the known fixed layout
+      // rather than showing nothing.
+      if (idx.name === -1) {
+        idx.name = 1; idx.category = 2; idx.town = 4; idx.street = 5; idx.reason = 7;
+      }
+
       function streetOnly(addr) {
         if (!addr) return '';
         // strip a leading house number so only the street name shows publicly
@@ -666,7 +673,7 @@
           location: location,
           reason: cellText(c, idx.reason)
         };
-      }).filter(e => e.name && (e.category === 'Individual' || e.category === 'Individual-Chatham Resident')).reverse();
+      }).filter(e => e.name && (e.category === 'Individual' || e.category === 'Individual-Chatham Resident' || e.category === '')).reverse();
 
       if (entries.length === 0) {
         signerListEl.innerHTML = '<p style="color:var(--slate);font-style:italic;">Be the first to add your name.</p>';
