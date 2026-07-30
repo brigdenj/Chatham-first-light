@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -317,7 +318,17 @@
       but we don't believe the right question has been asked, and we don't accept that this is simply what
       modernization looks like.
     </p>
+    <p>
+      We're not asking the Coast Guard to leave the light exactly as it was during a pandemic-era generator
+      swap, or to resist modern equipment on principle. We're asking for the historic apparatus to be fitted
+      with a modern LED source and drive mechanism that restores the light's full sweep — the same aura
+      mariners and residents have relied on for decades — and we're asking the Coast Guard to show its work:
+      the safety analysis, the historic-preservation review, and a real answer for why the town wasn't told.
+    </p>
 
+    <button type="button" id="expandBtn" class="btn btn-ghost" style="border-color:var(--line);color:var(--ink);margin:0.6rem 0 0;">Read the full background ↓</button>
+
+    <div id="fullBackground" style="display:none; margin-top:2rem;">
     <div class="facts">
       <h3>What we know</h3>
       <ul>
@@ -405,6 +416,8 @@
         the Chatham Marconi Maritime Center and the Atwood House Museum are prepared to receive and conserve it.
         This equipment belongs in the town whose harbor it served.
       </p>
+    </div>
+
     </div>
 
     <p style="margin-top:2rem;">
@@ -582,6 +595,17 @@
   }
 
   loadSigners();
+
+  // --- Read the full background toggle ---
+  const expandBtn = document.getElementById('expandBtn');
+  const fullBackground = document.getElementById('fullBackground');
+  if (expandBtn && fullBackground) {
+    expandBtn.addEventListener('click', function () {
+      const isOpen = fullBackground.style.display === 'block';
+      fullBackground.style.display = isOpen ? 'none' : 'block';
+      expandBtn.textContent = isOpen ? 'Read the full background ↓' : 'Show less ↑';
+    });
+  }
 </script>
 
 </body>
