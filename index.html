@@ -311,7 +311,7 @@
     <p class="hero-subtitle">
       A community campaign to restore the original sweep of Chatham Lighthouse's beacon
     </p>
-    <h1>Chatham Light has swept this shoreline for eighty years. <em>Help us keep it that way.</em></h1>
+    <h1>Chatham Light has swept this shoreline for nearly 150 years. <em>Help us keep it that way.</em></h1>
     <p class="lede">
       This July, the Coast Guard replaced Chatham Light's beacon with a new LED unit. The old light cast a
       wide, unmistakable sweep across the trees, the streets, and the water — a signal boaters and residents
@@ -713,6 +713,17 @@
         fReasonLabel.innerHTML = 'What does Chatham Light mean to you? <span style="text-transform:none;letter-spacing:0;">(shown publicly with your name)</span>';
       }
     });
+
+    // Pre-select category from a URL param, e.g. ?as=business or ?as=org,
+    // so an outreach link can drop someone straight into the right form state.
+    const params = new URLSearchParams(window.location.search);
+    const asParam = (params.get('as') || '').toLowerCase();
+    const presetMap = { business: 'Business', biz: 'Business', org: 'Organization', organization: 'Organization' };
+    if (presetMap[asParam]) {
+      fCategory.value = presetMap[asParam];
+      fCategory.dispatchEvent(new Event('change'));
+      setTimeout(() => document.getElementById('register').scrollIntoView({ behavior: 'smooth' }), 300);
+    }
   }
 
   // --- Read the full background toggle (single control, in the hero) ---
