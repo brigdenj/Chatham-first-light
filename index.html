@@ -301,6 +301,22 @@
     outline: 2px solid var(--beacon-dim);
     outline-offset: 2px;
   }
+
+  .faq-item { margin-bottom: 1.6rem; }
+  .faq-item:last-child { margin-bottom: 0; }
+  .faq-q {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.08rem;
+    color: var(--ink);
+    margin: 0 0 0.5rem;
+  }
+  .faq-a {
+    font-size: 1.02rem;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin: 0;
+  }
 </style>
 </head>
 <body>
@@ -321,6 +337,7 @@
     <div class="cta-row">
       <a href="#register" class="btn btn-primary">Add your name</a>
       <a href="#about" class="btn btn-ghost" id="heroReadMore">Read the full statement</a>
+      <a href="#faq" class="btn btn-ghost">FAQ</a>
     </div>
   </div>
 </div>
@@ -514,6 +531,61 @@
       <p style="color:var(--slate);font-style:italic;">Loading…</p>
     </div>
   </section>
+
+  <div class="divider"></div>
+
+  <section id="faq">
+    <h2 class="section-h2">Frequently asked questions</h2>
+    <p style="color:var(--ink-soft);font-size:1.02rem;line-height:1.7;margin:0 0 2rem;">
+      Chatham Light's history and character matter to this town, and we don't want to understate that. But the
+      most urgent, actionable part of this campaign is straightforward: get the beam's near-shore characteristics
+      restored so it keeps doing the safety job it's done for nearly 150 years. These questions focus on that.
+    </p>
+
+    <div class="faq-item">
+      <p class="faq-q">What exactly changed?</p>
+      <p class="faq-a">In July 2026, the Coast Guard replaced Chatham Light's beacon with a new LED unit.
+      Since then, residents, boaters, and fishermen have consistently observed that the light no longer
+      produces the wide sweep and near-shore aura it has for nearly 150 years.</p>
+    </div>
+
+    <div class="faq-item">
+      <p class="faq-q">Isn't this really about nostalgia, not safety?</p>
+      <p class="faq-a">We don't think so. A light's rated offshore range and its near-shore conspicuity —
+      how clearly it reads to someone a mile or two out — are different measurements. Chatham's waters — the
+      entrance to Chatham Harbor east of the light, Chatham Roads (the approach to Stage Harbor) to the south,
+      and the shoals extending toward Monomoy — shift constantly. The U.S. Coast Pilot itself calls for
+      extreme caution entering Chatham Harbor and notes there's no marked channel through the shoals toward
+      Monomoy. A light that reads clearly close to shore, not just from far offshore, is part of how mariners
+      actually hold their bearings through that stretch.</p>
+    </div>
+
+    <div class="faq-item">
+      <p class="faq-q">Do you have proof this is less safe?</p>
+      <p class="faq-a">We're not claiming a documented incident. We're saying a light mariners have relied
+      on for generations to hold their bearings through some of the most dynamic waters on the coast has
+      visibly changed, and that's worth getting right before it matters — not after.</p>
+    </div>
+
+    <div class="faq-item">
+      <p class="faq-q">What exactly are you asking the Coast Guard to do?</p>
+      <p class="faq-a">Adjust the new beacon so it once again produces the same near-shore sweep and
+      visibility as the original light. We understand there's more than one way to get there — a diffuser or
+      optic adjustment to spread the beam back into near-shore range, a modern rotating optic, or updated
+      drive mechanics — and we're glad to defer to Coast Guard engineers on the method. We just care about
+      the outcome: mariners and residents close to shore seeing the light the way they always have. The
+      Coast Guard has made similar adjustments elsewhere, including at Gay Head Light on Martha's Vineyard,
+      so we're confident this is a solvable, practical fix, not a fundamental redesign.</p>
+    </div>
+
+    <div class="faq-item">
+      <p class="faq-q">Doesn't the historic and cultural significance matter too?</p>
+      <p class="faq-a">Very much so — Chatham Light is a nationally registered historic property, it anchors
+      the Old Village Historic District, and it turns 150 years old in 2027. We think that history is worth
+      honoring. But the near-shore navigation piece is the part that can't wait, which is why it's the focus
+      of this page and of our ask.</p>
+    </div>
+  </section>
 </main>
 
 <footer>
@@ -631,9 +703,9 @@
       const orgs = entries.filter(e => e.category === 'Organization');
       const bizzes = entries.filter(e => e.category === 'Business');
 
-      renderCompressedList(signerListEl, individuals, 10, 'signatures', renderPersonRow, 'See the full list of residents and interested community members →', 'Be the first to add your name.');
-      renderCompressedList(document.getElementById('orgList'), orgs, 8, 'organizations', renderSupporterRow, null, 'Organizations pending review.');
-      renderCompressedList(document.getElementById('bizList'), bizzes, 8, 'businesses', renderSupporterRow, null, 'Businesses pending review.');
+      renderCompressedList(signerListEl, individuals, 3, 'signatures', renderPersonRow, 'See the full list of residents and interested community members →', 'Be the first to add your name.', PINNED_NAMES);
+      renderCompressedList(document.getElementById('orgList'), orgs, 3, 'organizations', renderSupporterRow, null, 'Organizations pending review.', PINNED_NAMES);
+      renderCompressedList(document.getElementById('bizList'), bizzes, 3, 'businesses', renderSupporterRow, null, 'Businesses pending review.', PINNED_NAMES);
     } catch (err) {
       const msg = `<p style="color:var(--slate);font-style:italic;">Signatures are loading — check back in a moment.</p>`;
       signerListEl.innerHTML = msg;
@@ -660,15 +732,37 @@
       </div>`;
   }
 
-  function renderCompressedList(container, items, previewCount, labelPlural, rowFn, expandText, emptyText) {
+  // Names that should always stay visible on the front page, in this order,
+  // regardless of how many new signatures come in. The 2-3 newest
+  // non-pinned entries rotate in below them.
+  const PINNED_NAMES = ['Michael Hearle', 'Drew Carlson', 'Nancy Robb', 'Dr Herbert', 'Regina Shakin', 'Andrew Friendly'];
+
+  function renderCompressedList(container, items, newestCount, labelPlural, rowFn, expandText, emptyText, pinnedNames) {
     if (!container) return;
     if (items.length === 0) {
       container.innerHTML = `<p style="color:var(--slate);font-style:italic;">${emptyText || `No ${labelPlural} yet.`}</p>`;
       return;
     }
-    const preview = items.slice(0, previewCount);
-    const rest = items.slice(previewCount);
-    let html = preview.map(rowFn).join('');
+
+    pinnedNames = pinnedNames || [];
+    const pinned = [];
+    const seen = new Set();
+    pinnedNames.forEach(pn => {
+      const match = items.find(e => e.name && e.name.trim().toLowerCase() === pn.toLowerCase() && !seen.has(e));
+      if (match) { pinned.push(match); seen.add(match); }
+    });
+    const remaining = items.filter(e => !seen.has(e));
+    const remainingWithQuote = remaining.filter(e => e.reason && e.reason.trim());
+
+    const preview = remainingWithQuote.slice(0, newestCount);
+    const previewSet = new Set(preview);
+    const rest = remaining.filter(e => !previewSet.has(e));
+
+    let html = pinned.map(rowFn).join('');
+    if (pinned.length > 0 && preview.length > 0) {
+      html += `<p style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--slate);margin:1.4rem 0 0.6rem;">Newest additions</p>`;
+    }
+    html += preview.map(rowFn).join('');
     if (rest.length > 0) {
       const restId = 'rest_' + Math.random().toString(36).slice(2, 8);
       const label = expandText || `See all ${items.length} ${labelPlural} →`;
