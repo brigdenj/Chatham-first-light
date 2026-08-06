@@ -1,0 +1,40 @@
+services:
+  api:
+    image: ${API_IMAGE:-chatham-first-light-api:latest}
+    restart: unless-stopped
+    volumes:
+      - app-data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/healthz"]
+      interval: 15s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+
+  nginx:
+    image: nginx:1.29-alpine
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      DOMAIN: ${DOMAIN:-api.chathamfirstlight.com}
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - ./nginx/templates:/etc/nginx/custom-templates:ro
+      - ./nginx/40-enable-tls.sh:/docker-entrypoint.d/40-enable-tls.sh:ro
+      - letsencrypt:/etc/letsencrypt:ro
+
+  certbot:
+    image: certbot/certbot:v4.1.1
+    profiles: ["certbot"]
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+
+volumes:
+  app-data:
+    name: chatham-first-light-data
+    external: true
+  letsencrypt:
