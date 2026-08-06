@@ -47,12 +47,12 @@ CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o chatham-first-light-server ./c
 
 For 32-bit ARM, use `GOARCH=arm GOARM=7`.
 
-## Container deployment over SSH
+## Docker Compose deployment over SSH
 
-`deploy.sh` detects the remote CPU architecture, builds a matching Docker image
-locally, copies the compressed image over SSH, loads it into remote Docker, and
-starts the API. SQLite is stored in the persistent Docker volume
-`chatham-first-light-data`, which is retained when the container is replaced.
+`deploy.sh` detects the remote CPU architecture, builds and transfers the API
+image, copies the Compose configuration, and runs `docker compose up` remotely.
+Compose starts the API and nginx, with an opt-in Certbot service for certificate
+issuance. SQLite and Let's Encrypt state are kept in named Docker volumes.
 
 The default target is the Chatham First Light EC2 instance:
 
@@ -63,12 +63,30 @@ The default target is the Chatham First Light EC2 instance:
 Configuration can be overridden with environment variables:
 
 ```sh
-SSH_TARGET=user@example.com SSH_KEY=/path/to/key PORT=8080 ./deploy.sh
+SSH_TARGET=user@example.com SSH_KEY=/path/to/key ./deploy.sh
 ```
 
-The deployment verifies `/healthz` and automatically restores the previous
-container image if the new container does not become healthy.
+The deployment verifies `/healthz` through nginx. Docker and the Docker Compose
+plugin are required remotely. Ports 80 and 443 must be open in the instance
+firewall/security group. Override them locally with `HTTP_PORT` and `HTTPS_PORT`
+if needed.
 
-The container publishes the configured port on the host. External access also
-requires that port to be allowed by the instance's AWS security group, or a
-reverse proxy can forward HTTPS traffic to it.
+### Enable HTTPS after DNS is ready
+
+The apex and `www` site remain hosted by GitHub Pages. Create an `A` record for
+`api.chathamfirstlight.com` pointing to the API server. Issue the API certificate
+with an interactive DNS-01 challenge:
+
+```sh
+ISSUE_CERTIFICATE=true CERTBOT_EMAIL=admin@example.com ./deploy.sh
+```
+
+Certbot prints a TXT value for `_acme-challenge.api.chathamfirstlight.com` and
+waits while you add it to DNS. Confirm only after the TXT record has propagated.
+nginx initially serves HTTP, switches to HTTPS after issuance, and redirects
+subsequent HTTP traffic.
+
+Because manual DNS validation has no provider API credentials, it cannot renew
+unattended. Before the certificate expires, rerun the same command and replace
+the TXT value when prompted. Certificate issuance is deliberately opt-in so
+ordinary deployments do not pause waiting for DNS changes.
