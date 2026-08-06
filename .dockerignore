@@ -1,0 +1,6 @@
+.git
+.gitignore
+data
+chatham-first-light-server
+README.md
+deploy.sh
