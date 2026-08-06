@@ -3,6 +3,24 @@
 The repository contains the static campaign page and a small Go API backed by
 SQLite.
 
+## Run the complete app locally
+
+Go 1.23 or newer, Python 3, and curl are required. Start the API and static
+site together with:
+
+```sh
+./dev.sh
+```
+
+Then open <http://127.0.0.1:8000>. The launcher serves the site on port 8000,
+runs the API on port 8080, and stores test signatures separately in
+`data/dev-signatures.db`. Press Ctrl-C to stop both servers. To use another
+development database, set `DB_PATH`:
+
+```sh
+DB_PATH=/tmp/chatham-signatures.db ./dev.sh
+```
+
 ## Run the API
 
 Go 1.23 or newer is required.

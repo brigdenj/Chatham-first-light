@@ -69,3 +69,25 @@ func TestCreateRejectsInvalidInput(t *testing.T) {
 		t.Fatalf("expected JSON error, body = %s", response.Body.String())
 	}
 }
+
+func TestCORSPreflightAllowsPublicSite(t *testing.T) {
+	db, err := openDB(filepath.Join(t.TempDir(), "test.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	app := &application{db: db}
+
+	request := httptest.NewRequest(http.MethodOptions, "/api/signatures", nil)
+	request.Header.Set("Origin", "https://chathamfirstlight.com")
+	request.Header.Set("Access-Control-Request-Method", http.MethodPost)
+	response := httptest.NewRecorder()
+	app.routes().ServeHTTP(response, request)
+
+	if response.Code != http.StatusNoContent {
+		t.Fatalf("status = %d, body = %s", response.Code, response.Body.String())
+	}
+	if got := response.Header().Get("Access-Control-Allow-Origin"); got != "https://chathamfirstlight.com" {
+		t.Fatalf("Access-Control-Allow-Origin = %q", got)
+	}
+}

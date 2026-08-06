@@ -446,14 +446,11 @@
   <section class="register" id="register">
     <h2>Sign the petition</h2>
 
-    <form id="signForm"
-      action="https://docs.google.com/forms/d/e/1FAIpQLScHbgEfYsp75JcWX82EGkdmFFffiyoSufNYH6SletQ1g69itA/formResponse"
-      method="POST"
-      target="hidden_iframe">
+    <form id="signForm">
 
       <div>
         <label for="fCategory">I'm signing as</label>
-        <select id="fCategory" name="entry.770705135" required>
+        <select id="fCategory" name="category" required>
           <option value="">Choose one…</option>
           <option value="Individual-Chatham Resident">Individual — Chatham resident</option>
           <option value="Individual">Individual — not a Chatham resident</option>
@@ -465,11 +462,11 @@
       <div class="field-row" style="margin-top:1rem;">
         <div>
           <label for="fName" id="fNameLabel">Full name</label>
-          <input type="text" id="fName" name="entry.118029719" required autocomplete="name" placeholder="Jane Doe">
+          <input type="text" id="fName" name="name" required autocomplete="name" placeholder="Jane Doe">
         </div>
         <div>
           <label for="fEmail">Email <span style="text-transform:none;letter-spacing:0;">(kept private)</span></label>
-          <input type="email" id="fEmail" name="entry.1212239197" autocomplete="email" placeholder="jane@example.com">
+          <input type="email" id="fEmail" name="email" autocomplete="email" placeholder="jane@example.com">
         </div>
       </div>
 
@@ -477,22 +474,22 @@
         <div class="field-row">
           <div>
             <label for="fTown" id="fTownLabel">Town, state</label>
-            <input type="text" id="fTown" name="entry.176475185" autocomplete="address-level2" placeholder="Chatham, MA">
+            <input type="text" id="fTown" name="town" autocomplete="address-level2" placeholder="Chatham, MA">
           </div>
           <div>
             <label for="fPhone">Phone number <span style="text-transform:none;letter-spacing:0;">(kept private)</span></label>
-            <input type="tel" id="fPhone" name="entry.1466849427" autocomplete="tel" placeholder="(508) 555-0100">
+            <input type="tel" id="fPhone" name="phone" autocomplete="tel" placeholder="(508) 555-0100">
           </div>
         </div>
         <div id="streetFieldWrap">
           <label for="fAddress">Street address <span style="text-transform:none;letter-spacing:0;">(kept private)</span></label>
-          <input type="text" id="fAddress" name="entry.1400945880" autocomplete="street-address" placeholder="520 Cotton Street">
+          <input type="text" id="fAddress" name="street_address" autocomplete="street-address" placeholder="520 Cotton Street">
         </div>
       </div>
 
       <div>
         <label for="fReason" id="fReasonLabel">What does Chatham Light mean to you? <span style="text-transform:none;letter-spacing:0;">(feel free to mention any impact on navigation or safety — shown publicly with your name)</span></label>
-        <input type="text" id="fReason" name="entry.1021919658" placeholder="e.g. I've navigated by that sweep for twenty years of night sails — without it I'm less sure of my bearings coming in.">
+        <input type="text" id="fReason" name="reason" placeholder="e.g. I've navigated by that sweep for twenty years of night sails — without it I'm less sure of my bearings coming in.">
       </div>
       <div class="submit-row">
         <button type="submit" class="submit-btn" id="submitBtn">Add my name</button>
@@ -599,35 +596,43 @@
   </p>
 </footer>
 
-<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
-
 <script>
+  const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:8080'
+    : 'https://api.chathamfirstlight.com';
   const form = document.getElementById('signForm');
   const submitBtn = document.getElementById('submitBtn');
   const statusMsg = document.getElementById('statusMsg');
-  const hiddenFrame = document.getElementById('hidden_iframe');
-  let submitted = false;
 
-  hiddenFrame.addEventListener('load', () => {
-    if (!submitted) return; // ignore the initial blank load
-    submitBtn.disabled = false;
-    statusMsg.textContent = 'Added — thank you.';
-    statusMsg.className = 'status-msg success';
-    form.reset();
-  });
-
-  form.addEventListener('submit', () => {
-    submitted = true;
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
     submitBtn.disabled = true;
     statusMsg.textContent = 'Saving…';
     statusMsg.className = 'status-msg';
-    // form submits normally to the hidden iframe; Google Forms doesn't
-    // return a readable response due to CORS, so we just confirm on load.
-    setTimeout(loadSigners, 4000); // give the Sheet a moment to update, then refresh
+
+    try {
+      const fields = new FormData(form);
+      const res = await fetch(`${API_BASE}/api/signatures`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(fields.entries()))
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not save your signature.');
+
+      statusMsg.textContent = 'Added — thank you.';
+      statusMsg.className = 'status-msg success';
+      form.reset();
+      await loadSigners();
+    } catch (err) {
+      statusMsg.textContent = err.message || 'Could not save your signature. Please try again.';
+      statusMsg.className = 'status-msg error';
+    } finally {
+      submitBtn.disabled = false;
+    }
   });
 
-  // --- Public signer list, pulled from the shared Google Sheet ---
-  const SHEET_ID = '1xrkFgc8L_OCciP18VYDugJDIB-smjrnCUcIqAOBdStA';
+  // --- Public signer list, pulled from the petition API ---
   const signerListEl = document.getElementById('signerList');
 
   function escapeHtml(str) {
@@ -638,64 +643,10 @@
 
   async function loadSigners() {
     try {
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1`;
-      const res = await fetch(url);
-      const text = await res.text();
-      const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-      const data = JSON.parse(jsonText);
-      const rows = data.table.rows || [];
-      const cols = data.table.cols || [];
-
-      // Find each column by matching its actual header text (case-insensitive,
-      // partial match), instead of assuming a fixed position — Google Sheets
-      // appends new form questions as new columns wherever they land, not
-      // necessarily in question order.
-      function findCol(...keywords) {
-        for (let i = 0; i < cols.length; i++) {
-          const label = (cols[i].label || '').toLowerCase();
-          if (keywords.some(k => label.includes(k))) return i;
-        }
-        return -1;
-      }
-
-      const idx = {
-        name: findCol('full name', 'name'),
-        category: findCol('signing as'),
-        town: findCol('town'),
-        street: findCol('street'),
-        reason: findCol('mean to you', 'quote', 'support')
-      };
-
-      // Safety net: if header labels weren't detected (e.g. Google didn't
-      // recognize row 1 as a header), fall back to the known fixed layout
-      // rather than showing nothing.
-      if (idx.name === -1) {
-        idx.name = 1; idx.category = 2; idx.town = 4; idx.street = 5; idx.reason = 7;
-      }
-
-      function streetOnly(addr) {
-        if (!addr) return '';
-        // strip a leading house number so only the street name shows publicly
-        return String(addr).replace(/^\s*\d+[\s,-]*/, '').trim();
-      }
-
-      function cellText(c, i) {
-        return (i >= 0 && c[i]) ? (c[i].f || c[i].v || '') : '';
-      }
-
-      const entries = rows.map(r => {
-        const c = r.c;
-        const category = cellText(c, idx.category);
-        const town = cellText(c, idx.town);
-        const street = cellText(c, idx.street);
-        const location = category === 'Individual-Chatham Resident' ? streetOnly(street) : town;
-        return {
-          name: cellText(c, idx.name),
-          category: category,
-          location: location,
-          reason: cellText(c, idx.reason)
-        };
-      }).filter(e => e.name).reverse();
+      const res = await fetch(`${API_BASE}/api/signatures`);
+      if (!res.ok) throw new Error('Could not load signatures.');
+      const data = await res.json();
+      const entries = (data.signatures || []).filter(e => e.name);
 
       const individuals = entries
         .filter(e => e.category === 'Individual' || e.category === 'Individual-Chatham Resident' || e.category === '')
